@@ -132,3 +132,4 @@ dist
 test-results/
 playwright-report/
 hidden_data.json
+openings.json

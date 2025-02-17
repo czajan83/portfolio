@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/czajan83/ptm#readme",
   "devDependencies": {
-    "@types/node": "^22.13.4"
+    "@types/node": "^22.13.4",
+    "@types/webpack-env": "^1.18.8"
   }
 }
