@@ -1,0 +1,29 @@
+{
+  "name": "pw",
+  "version": "1.0.0",
+  "description": "software test automation with playwright",
+  "main": "index.js",
+  "scripts": {
+    "tests:chrome": "npx playwright test --config=playwright.config.ts --project=Chrome --reporter=html",
+    "tests:firefox": "npx playwright test --config=playwright.config.ts --project=Firefox --reporter=html",
+    "tests:webkit": "npx playwright test --config=playwright.config.ts --project=Webkit --reporter=html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/czajan83/ptm.git"
+  },
+  "keywords": [
+    "tests",
+    "automation",
+    "playwright"
+  ],
+  "author": "Andrzej Czajka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/czajan83/ptm/issues"
+  },
+  "homepage": "https://github.com/czajan83/ptm#readme",
+  "devDependencies": {
+    "@types/node": "^22.13.4"
+  }
+}
