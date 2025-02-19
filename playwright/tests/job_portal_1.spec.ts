@@ -8,7 +8,7 @@ var fs = require("fs");
 var dir_portal = "jobportal_1/";
 var dir_jobname = dir_portal + "tester_oprogramowania/"
 var dir_details = dir_jobname + "details/"
-var job_links = [''];
+var jobs = [{link: '', requirements: '', fileName: ""}];
 var max_opening_id = 0;
 if(!fs.existsSync(dir_portal)) fs.mkdirSync(dir_portal, 0o744);
 if(!fs.existsSync(dir_jobname)) fs.mkdirSync(dir_jobname, 0o744);
@@ -20,11 +20,11 @@ else {
     for (const job_file of job_files) {
         const current_opening_id = Number(job_file.replace(/[^0-9]/g, ''));
         if (max_opening_id < current_opening_id) max_opening_id = current_opening_id;
-        const job_opening = JSON.parse(JSON.stringify(require("../" + dir_details + job_file))).link;
-        job_links.push(job_opening);
+        const job_opening = JSON.parse(JSON.stringify(require("../" + dir_details + job_file)));
+        jobs.push(job_opening);
     }
-    job_links.shift();
 }
+jobs.shift()
    
 
 test("Get the list of job offers", async ({ page }) => {
@@ -54,14 +54,19 @@ test("Get the list of job offers", async ({ page }) => {
         if(job_link == null) job_link = "";
 
         // Get job offers only if not seen before
-        if(!job_links.includes(job_link)) {
+        var jobs_links = ['']
+        for(const job of jobs) {
+            jobs_links.push(job.link)
+        }
+        if(!jobs_links.includes(job_link)) {
             max_opening_id++;
             let jsonOpeningDetails = {
                 link: job_link,
-                requirements: ""
+                requirements: "",
+                fileName: dir_details + "opening_" + max_opening_id.toString() + ".json"
             };
             let strOpeningDetails = JSON.stringify(jsonOpeningDetails, null, 2) + "\n";
-            fs.writeFile(dir_details + "/opening_" + max_opening_id.toString() + ".json", strOpeningDetails, 'utf8', (err) => {
+            fs.writeFile(jsonOpeningDetails.fileName, strOpeningDetails, 'utf8', (err) => {
                 if(err) console.log(err);
             });
         };
@@ -85,7 +90,27 @@ test("Get the list of job offers", async ({ page }) => {
     });
 });
 
-
-test("Get details of the job offers", async({ page }) => {
-    console.log(job_links)
-})
+var i = 0;
+for(const job of jobs) {
+    if(job.requirements == '') {
+        test("Get details of the job offer " + i, async({ page }) => {
+            console.log(job.fileName);
+            await page.goto(job.link);
+            var opening_requirements = '';
+            const opening_listitems = await page.locator('.JobDetails_jobDescription__uW_fK li').allInnerTexts();
+            const opening_paragraphs = await page.locator('.JobDetails_jobDescription__uW_fK p').allInnerTexts();
+            for(const opening_listitem of opening_listitems) opening_requirements += opening_listitem + "\n";
+            opening_requirements += "\n\n\n";
+            for(const opening_paragraph of opening_paragraphs) opening_requirements += opening_paragraph + "\n";
+            var jsonOpeningDetails = JSON.parse(JSON.stringify(require("../" + job.fileName)));
+            console.log(jsonOpeningDetails)
+            jsonOpeningDetails.requirements = opening_requirements;
+            const strOpeningDetails = JSON.stringify(jsonOpeningDetails, null, 2) + "\n";
+            fs.writeFile(job.fileName, strOpeningDetails, 'utf8', (err) => {
+                if(err) console.log(err);
+            });
+            await delay(30000);
+        });
+        i++;
+    }
+}
