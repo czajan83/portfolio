@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Setup') { 
             steps { 
-                cd /home/andrzej/git/portfolio/playwright
-                npm install
-                npx playwright install 
+                sh(script: 'cd /home/andrzej/git/portfolio/playwright')
+                sh(script: 'npm install')
+                sh(script: 'npx playwright install') 
             }
         }        
         stage('Run') { 
