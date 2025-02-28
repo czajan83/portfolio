@@ -5,8 +5,7 @@ const config: PlaywrightTestConfig = {
     retries: 0,
     testDir: 'tests',
     use: {
-        headless: false,
-        screenshot: "only-on-failure",
+        headless: true,
     },
 
     projects: [

@@ -1,9 +1,16 @@
 pipeline { 
     agent any 
     stages {
-        stage('Hello') { 
+        stage('Setup') { 
             steps { 
-                echo 'Hello' 
+                cd /home/andrzej/git/portfolio/playwright
+                npm install
+                npx playwright install 
+            }
+        }        
+        stage('Run') { 
+            steps { 
+                npm run tests:chrome
             }
         }
     }
