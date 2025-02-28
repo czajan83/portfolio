@@ -10,7 +10,7 @@ pipeline {
         }        
         stage('Run') { 
             steps { 
-                npm run tests:chrome
+                sh(script: 'npm run tests:chrome') 
             }
         }
     }
