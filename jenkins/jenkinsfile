@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Setup') { 
             steps { 
-    			dir('/home/andrzej/git/portfolio/playwright') {
+    			dir('~/git/portfolio/playwright') {
                 	sh(script: 'npm install')
                 	sh(script: 'npx playwright install') 
                 }
@@ -11,7 +11,7 @@ pipeline {
         }        
         stage('Run') { 
             steps {
-       			dir('/home/andrzej/git/portfolio/playwright') { 
+       			dir('~/git/portfolio/playwright') { 
                 	sh(script: 'npm run tests:firefox') 
                 }
             }
