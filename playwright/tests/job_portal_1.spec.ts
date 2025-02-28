@@ -30,6 +30,7 @@ jobs.shift()
 test("Get the list of job offers", async ({ page }) => {
 
     // Open the job offers website and test amount of offers
+    console.log( website + '/Job/poland-tester-oprogramowania-jobs-SRCH_IL.0,6_IN193_KO7,28.htm' );
     await page.goto( website + '/Job/poland-tester-oprogramowania-jobs-SRCH_IL.0,6_IN193_KO7,28.htm' );
     let searchResultsText = await page.locator('.SearchResultsHeader_tooltipWrapper__fnh9I h1').innerText();
     let searchResultsNumber = await Number(searchResultsText.replace(/[^0-9]/g, ''))
