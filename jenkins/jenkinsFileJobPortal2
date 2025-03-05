@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Setup') { 
             steps { 
-    			dir('/home/andrzej/git/portfolio/jenkins') {
+    			dir('/git/portfolio/playwright') {
                 	sh(script: 'npm install')
                 	sh(script: 'npx playwright install') 
                 }
@@ -11,7 +11,7 @@ pipeline {
         }        
         stage('GetJobsList') { 
             steps {
-       			dir('/home/andrzej/git/portfolio/jenkins') { 
+       			dir('/git/portfolio/playwright') { 
                 	sh(script: 'npx playwright test tests/jobListPortal2.spec.ts --project=chrome') 
                 }
             }
