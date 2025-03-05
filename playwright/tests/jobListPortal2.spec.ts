@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import { JobsList } from "../POM/jobListPortal2POM";
 
 var fs = require("fs");
-var dir_portal = "../jobPortal2/";
+var dir_portal = "jobPortal2/";
 var dir_jobname = dir_portal + "testerOprogramowania/"
 var dir_details = dir_jobname + "details/"
 var jobs = [{link: '', requirements: '', fileName: ""}];
