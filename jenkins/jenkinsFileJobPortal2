@@ -1,0 +1,20 @@
+pipeline { 
+    agent any 
+    stages {
+        stage('Setup') { 
+            steps { 
+    			dir('/home/andrzej/git/portfolio/playwright') {
+                	sh(script: 'npm install')
+                	sh(script: 'npx playwright install') 
+                }
+            }
+        }        
+        stage('GetJobsList') { 
+            steps {
+       			dir('/home/andrzej/git/portfolio/playwright') { 
+                	sh(script: 'npx playwright test tests/jobListPortal2.spec.ts --project=chrome') 
+                }
+            }
+        }
+    }
+}
