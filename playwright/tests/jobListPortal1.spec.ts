@@ -5,7 +5,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const website = JSON.parse(JSON.stringify(require("../hidden_data.json"))).job_portal_1
 
 var fs = require("fs");
-var dir_portal = "jobportal_1/";
+var dir_portal = "jobPortal1/";
 var dir_jobname = dir_portal + "tester_oprogramowania/"
 var dir_details = dir_jobname + "details/"
 var jobs = [{link: '', requirements: '', fileName: ""}];

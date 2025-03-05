@@ -27,6 +27,10 @@ export class JobsList {
             await this.page.locator(fairPopupPath).click();
     }
 
+    async getJobsListLength():Promise<string> {
+        return await this.page.locator('#search > div > div > div > div.listing_s1e6x2e0 > div.listing_m1em0ops > button > span.core_c11srdo1.variant-primary').innerText()
+    }
+
     async getJobItemPath(item: string) {
         return await '#offers-list > div:nth-child(3) > div:nth-child(' + item + ') > ';
     }
@@ -45,6 +49,12 @@ export class JobsList {
 
     async getJobItemEmployerLinkPath(item: string) {
         return await this.getJobItemDetailsPath(item) + 'div.tiles_c2ezmf3 > div.tiles_c3ppts3 > div.tiles_c639tii > ';
+    }
+
+    async checkIfJobItemExists(item: string) {
+        if(await this.page.locator('#offers-list > div:nth-child(3) > div:nth-child(' + item + ')').isVisible())
+            return true;
+        return false;
     }
 
     async getJobItemTitle(item: string) {
@@ -97,5 +107,13 @@ export class JobsList {
             index--;
         }
         return ''
+    }
+
+    async switchToNextCard() {
+        const switchToNextCardPath = '#offers-list > div.listing_b1x0kate.core_po9665q > div.listing_p1k3sq6e > div > button.listing_ngj95i6.listing_s1hxgdve.size-small.variant-ghost.core_b1fqykql';
+        if(await this.page.locator(switchToNextCardPath).isVisible()) {
+            await this.page.locator(switchToNextCardPath).click();
+            await delay(2000);
+        }
     }
 }

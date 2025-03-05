@@ -132,4 +132,5 @@ dist
 test-results/
 playwright-report/
 hidden_data.json
-jobportal_1/
+jobPortal1/
+jobPortal2/
