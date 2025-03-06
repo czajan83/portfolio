@@ -15,6 +15,20 @@ pipeline {
                 	sh(script: 'npx playwright test tests/jobListPortal2.spec.ts --project=chrome') 
                 }
             }
+        }        
+        stage('Normalize jobs list') { 
+            steps {
+       			dir('/git/portfolio/python') { 
+                	sh(script: 'python normalizeLinks.py') 
+                }
+            }
+        }        
+        stage('Integrate with generic jobs List') { 
+            steps {
+       			dir('/git/portfolio/python') { 
+                	sh(script: 'python normalizeLinks.py') 
+                }
+            }
         }
     }
 }
