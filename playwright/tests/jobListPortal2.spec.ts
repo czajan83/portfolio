@@ -76,7 +76,7 @@ test.only("Get the list of job offers", async ({ page }) => {
     await fs.writeFile(dir_jobname + "jobsList_" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
         if(err) console.log(err);
     });
-    await fs.chmod(dir_jobname + "jobsList_" + timestamp.toString() + ".json", 0o777, (err) => {
-        if(err) console.log(err);
-    });
+    // await fs.chmod(dir_jobname + "jobsList_" + timestamp.toString() + ".json", 0o777, (err) => {
+    //     if(err) console.log(err);
+    // });
 });
