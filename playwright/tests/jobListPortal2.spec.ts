@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 import { JobsList } from "../POM/jobListPortal2POM";
 
 var fs = require("fs");
-var dir_portal = "jobPortal2/";
+var dir_portal = "../jobPortal2/";
 var dir_jobname = dir_portal + "testerOprogramowania/"
 var dir_details = dir_jobname + "details/"
 var jobs = [{link: '', requirements: '', fileName: ""}];
@@ -73,7 +73,7 @@ test.only("Get the list of job offers", async ({ page }) => {
     strJobOffersList = strJobOffersList.slice(0, -2);
     strJobOffersList += "\n]"
     const timestamp = new Date().getTime()
-    fs.writeFile(dir_jobname + "../jobsList" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
+    fs.writeFile(dir_jobname + "/jobsList" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
         if(err) console.log(err);
     });
 });
