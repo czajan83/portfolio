@@ -73,32 +73,7 @@ test.only("Get the list of job offers", async ({ page }) => {
     strJobOffersList = strJobOffersList.slice(0, -2);
     strJobOffersList += "\n]"
     const timestamp = new Date().getTime()
-    fs.writeFile(dir_jobname + "/jobsList" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
+    fs.writeFile(dir_jobname + "../jobsList" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
         if(err) console.log(err);
     });
 });
-
-var i = 0;
-for(const job of jobs) {
-    if(job.requirements == '') {
-        test("Get details of the job offer " + i, async({ page }) => {
-            console.log(job.fileName);
-            await page.goto(job.link);
-            var opening_requirements = '';
-            const opening_listitems = await page.locator('.JobDetails_jobDescription__uW_fK li').allInnerTexts();
-            const opening_paragraphs = await page.locator('.JobDetails_jobDescription__uW_fK p').allInnerTexts();
-            for(const opening_listitem of opening_listitems) opening_requirements += opening_listitem + "\n";
-            opening_requirements += "\n\n\n";
-            for(const opening_paragraph of opening_paragraphs) opening_requirements += opening_paragraph + "\n";
-            var jsonOpeningDetails = JSON.parse(JSON.stringify(require("../" + job.fileName)));
-            console.log(jsonOpeningDetails)
-            jsonOpeningDetails.requirements = opening_requirements;
-            const strOpeningDetails = JSON.stringify(jsonOpeningDetails, null, 2) + "\n";
-            fs.writeFile(job.fileName, strOpeningDetails, 'utf8', (err) => {
-                if(err) console.log(err);
-            });
-            await delay(30000);
-        });
-        i++;
-    }
-}
