@@ -73,7 +73,7 @@ test.only("Get the list of job offers", async ({ page }) => {
     strJobOffersList = strJobOffersList.slice(0, -2);
     strJobOffersList += "\n]"
     const timestamp = new Date().getTime()
-    fs.writeFile(dir_jobname + "/openings_list_" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
+    fs.writeFile(dir_jobname + "/jobsList" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
         if(err) console.log(err);
     });
 });
