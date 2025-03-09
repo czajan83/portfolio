@@ -1,6 +1,6 @@
 declare var require: any
 import { test, expect } from "@playwright/test";
-import { JobsList } from "../POM/jobListPortal2POM";
+import { JobsListPortal2 } from "../POM/jobListPortal2POM";
 
 var fs = require("fs");
 var dir_portal = "../jobPortal2/";
@@ -26,10 +26,12 @@ jobs.shift()
    
 
 test.only("Get the list of job offers", async ({ page }) => {
-    let jobsList: JobsList;
-    jobsList = new JobsList(page);
+    let jobsList: JobsListPortal2;
+    jobsList = new JobsListPortal2(page);
 
     await jobsList.openPage();
+    await jobsList.closeCookiesPopup();
+    await jobsList.closeJobiConPopup();
 
     const jobsListLength = Number(await jobsList.getJobsListLength());
     const jobsCards = Math.ceil(jobsListLength / 50);
@@ -45,6 +47,8 @@ test.only("Get the list of job offers", async ({ page }) => {
             let strJobIndexAtCard = jobIndexAtCard.toString();
             if(await jobsList.checkIfJobItemExists(strJobIndexAtCard)) {
                 console.log(jobsCardIndex * 50 + jobIndexAtCard)
+                // if((jobsCardIndex * 50 + jobIndexAtCard) == 54)
+                //     jobsList.delay();
                 let jsonJobOffer = {
                     'index': jobsCardIndex * 50 + jobIndexAtCard,
                     'title': await jobsList.getJobItemTitle(strJobIndexAtCard),
@@ -76,7 +80,4 @@ test.only("Get the list of job offers", async ({ page }) => {
     await fs.writeFile(dir_jobname + "jobsList_" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
         if(err) console.log(err);
     });
-    // await fs.chmod(dir_jobname + "jobsList_" + timestamp.toString() + ".json", 0o777, (err) => {
-    //     if(err) console.log(err);
-    // });
 });

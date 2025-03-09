@@ -29,6 +29,13 @@ pipeline {
                 	sh(script: 'python integrate.py') 
                 }
             }
+        }        
+        stage('Get requirements for Jobs') { 
+            steps {
+       			dir('/git/portfolio/playwright') { 
+                	sh(script: 'npx playwright test tests/jobDetailsPortal2.spec.ts --project=chrome') 
+                }
+            }
         }
     }
 }

@@ -1,28 +1,24 @@
 declare var require: any
 import { expect, Locator, Page } from "@playwright/test";
+import { JobPortal2 } from "./jobPortal2POM";
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-export class JobsList {
-    readonly page: Page;
-    readonly jobItem: Locator;
+export class JobsListPortal2 extends JobPortal2 {
     readonly multiLocationHeader: string;
-    readonly website: string;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.jobItem = page.locator('');
+    constructor(page: Page) {    
+        super(page);
         this.multiLocationHeader = ' > h4';
-        this.website = JSON.parse(JSON.stringify(require("../hidden_data.json"))).job_portal_2;
     }
 
     async openPage() {
-        const cookiesPopupPath = '.cookies_aropjbf > div > button.size-medium.variant-primary.core_b1fqykql';
-        const fairPopupPath = '.popup_p1c6glb0';
         await this.page.goto( this.website + '/praca/tester%20oprogramowania;kw' );
         await delay(2000);
-        if(await this.page.locator(cookiesPopupPath).isVisible())
-            await this.page.locator(cookiesPopupPath).click();
+    }
+
+    async closeJobiConPopup() {
+        const fairPopupPath = '.popup_p1c6glb0';
         if(await this.page.locator(fairPopupPath).isVisible())
             await this.page.locator(fairPopupPath).click();
     }
@@ -32,11 +28,16 @@ export class JobsList {
     }
 
     async getJobItemPath(item: string) {
-        return await '#offers-list > div:nth-child(3) > div:nth-child(' + item + ') > ';
+        const variant1 = '#offers-list > div.listing_b1i2dnp8 > div.listing_ohw4t83 > div:nth-child(' + item + ')';
+        const variant2 = '#offers-list > div:nth-child(3) > div:nth-child(' + item + ') > div.gp-pp-reset.tiles_b18pwp01.core_po9665q';
+        const variant3 = '#offers-list > div:nth-child(4) > div:nth-child(' + item + ') > div.gp-pp-reset.tiles_b18pwp01.core_po9665q';
+        if(await this.page.locator(variant3).isVisible()) return await variant3;
+        if(await this.page.locator(variant2).isVisible()) return await variant2;
+        return await variant1;
     }
 
     async getJobItemDetailsPath(item: string) {
-        return await this.getJobItemPath(item) + 'div > div > div.tiles_cjkyq1p > div.tiles_cghoimp > ';
+        return await this.getJobItemPath(item) + ' > div > div.tiles_cjkyq1p > div.tiles_cghoimp > ';
     }
 
     async getJobItemHeaderPath(item: string) {
@@ -52,9 +53,13 @@ export class JobsList {
     }
 
     async checkIfJobItemExists(item: string) {
-        if(await this.page.locator('#offers-list > div:nth-child(3) > div:nth-child(' + item + ')').isVisible())
+        if(await this.page.locator(await this.getJobItemPath(item)).isVisible())
             return true;
         return false;
+    }
+
+    async delay() {
+        await this.page.pause()
     }
 
     async getJobItemTitle(item: string) {
