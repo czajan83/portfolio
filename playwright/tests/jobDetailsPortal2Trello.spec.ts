@@ -25,7 +25,7 @@ test("Post job offer into trello tasks", async({ request }) => {
     var limitIndex = 0;
     var jobIndex = 0;
     
-    while(limitIndex < 3 && jobIndex < jobsList.length) {
+    while(limitIndex < 10 && jobIndex < jobsList.length) {
         var job = jobsList[jobIndex];
         if(job.userNote3 == '') {
             if(job.workplace.includes('Praca zdalna') || job.workplace.includes('Praca hybrydowa')) await jp2Trello.addCardToToDoList(job.title, job.link);
