@@ -12,7 +12,7 @@ pipeline {
         stage('GetJobsList') { 
             steps {
        			dir('/git/portfolio/playwright') { 
-                	sh(script: 'npx playwright test tests/jobListPortal2.spec.ts --project=chrome') 
+                	sh(script: 'npx playwright test tests/jobListPortal2.spec.ts --config=playwright.config.ts --project=chrome') 
                 }
             }
         }        
@@ -33,7 +33,14 @@ pipeline {
         stage('Get requirements for Jobs') { 
             steps {
        			dir('/git/portfolio/playwright') { 
-                	sh(script: 'npx playwright test tests/jobDetailsPortal2.spec.ts --project=chrome') 
+                	sh(script: 'npx playwright test tests/jobDetailsPortal2.spec.ts --config=playwright.config.ts --project=chrome') 
+                }
+            }
+        }        
+        stage('Put the offers to Trello') { 
+            steps {
+       			dir('/git/portfolio/playwright') { 
+                	sh(script: 'npx playwright test tests/jobDetailsPortal2Trello.spec.ts --config=playwright.config.ts --project=chrome') 
                 }
             }
         }
