@@ -30,9 +30,10 @@ test("Get details of the job offers", async({ page }) => {
             job.userNote = await jobDetails.getJobReqs('1');
             job.userNote2 = await jobDetails.getJobReqs('2');
             jobsList[jobIndex] = job
+
+            limitIndex++;
         }
         jobIndex++;
-        limitIndex++;
     }
 
     jsonData = await JSON.stringify(jobsList);
