@@ -2,6 +2,8 @@ declare var require: any
 import { test, expect } from "@playwright/test";
 import { JobsListPortal2 } from "../POM/jobListPortal2POM";
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 var fs = require("fs");
 var dir_portal = "../jobPortal2/";
 var dir_jobname = dir_portal + "testerOprogramowania/"
@@ -47,8 +49,7 @@ test.only("Get the list of job offers", async ({ page }) => {
             let strJobIndexAtCard = jobIndexAtCard.toString();
             if(await jobsList.checkIfJobItemExists(strJobIndexAtCard)) {
                 console.log(jobsCardIndex * 50 + jobIndexAtCard)
-                // if((jobsCardIndex * 50 + jobIndexAtCard) == 54)
-                //     jobsList.delay();
+                await jobsList.closeJobHomeDistansePopup();
                 let jsonJobOffer = {
                     'index': jobsCardIndex * 50 + jobIndexAtCard,
                     'title': await jobsList.getJobItemTitle(strJobIndexAtCard),

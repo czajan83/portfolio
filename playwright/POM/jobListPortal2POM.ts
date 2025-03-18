@@ -23,6 +23,12 @@ export class JobsListPortal2 extends JobPortal2 {
             await this.page.locator(fairPopupPath).click();
     }
 
+    async closeJobHomeDistansePopup():Promise<void> {
+        const popupButtonLocator = '#popupContainer > div > div > div > button';
+        if(await this.page.locator(popupButtonLocator).isVisible())
+            await this.page.locator(popupButtonLocator).click();
+    }
+
     async getJobsListLength():Promise<string> {
         return await this.page.locator('#search > div > div > div > div.listing_s1e6x2e0 > div.listing_m1em0ops > button > span.core_c11srdo1.variant-primary').innerText()
     }
