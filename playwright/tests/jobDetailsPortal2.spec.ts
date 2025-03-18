@@ -33,6 +33,8 @@ test("Get details of the job offers", async({ page }) => {
 
             limitIndex++;
         }
+        console.log(jobIndex);
+        console.log(job.userNote)
         jobIndex++;
     }
 
