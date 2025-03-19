@@ -25,9 +25,9 @@ var dirDetails = dirJobname + "details/"
 var jobs = [{link: '', requirements: '', fileName: ""}];
 var max_opening_id = 0;
 
-await createFolder(dirPortal);
-await createFolder(dirJobname);
-if(!await createFolder(dirDetails)){
+createFolder(dirPortal);
+createFolder(dirJobname);
+if(!createFolder(dirDetails)){
     var jobFiles = fs.readdirSync(dirDetails)
     for (const jobFile of jobFiles) {
         const current_opening_id = Number(jobFile.replace(/[^0-9]/g, ''));
