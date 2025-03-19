@@ -1,26 +1,38 @@
 declare var require: any
+
 import { test, expect } from "@playwright/test";
 import { JobsListPortal2 } from "../POM/jobListPortal2POM";
+import { promises as fs } from 'fs';
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-var fs = require("fs");
-var dir_portal = "../jobPortal2/";
-var dir_jobname = dir_portal + "testerOprogramowania/"
-var dir_details = dir_jobname + "details/"
+
+async function createFolder(folderPath: string): Promise<boolean> {
+    try {
+        await fs.access(folderPath);
+        return false;
+    }
+    catch (error) {
+        await fs.createFolder(folderPath);
+        return true;
+    }
+
+}
+
+var dirPortal = "../jobPortal2/";
+var dirJobname = dirPortal + "testerOprogramowania/"
+var dirDetails = dirJobname + "details/"
 var jobs = [{link: '', requirements: '', fileName: ""}];
 var max_opening_id = 0;
-if(!fs.existsSync(dir_portal)) fs.mkdirSync(dir_portal, 0o744);
-if(!fs.existsSync(dir_jobname)) fs.mkdirSync(dir_jobname, 0o744);
-if(!fs.existsSync(dir_details)) {
-    fs.mkdirSync(dir_details, 0o744);
-}
-else {
-    var job_files = fs.readdirSync(dir_details)
-    for (const job_file of job_files) {
-        const current_opening_id = Number(job_file.replace(/[^0-9]/g, ''));
+
+await createFolder(dirPortal);
+await createFolder(dirJobname);
+if(!await createFolder(dirDetails)){
+    var jobFiles = fs.readdirSync(dirDetails)
+    for (const jobFile of jobFiles) {
+        const current_opening_id = Number(jobFile.replace(/[^0-9]/g, ''));
         if (max_opening_id < current_opening_id) max_opening_id = current_opening_id;
-        const job_opening = JSON.parse(JSON.stringify(require("../" + dir_details + job_file)));
+        const job_opening = JSON.parse(JSON.stringify(require("../" + dirDetails + jobFile)));
         jobs.push(job_opening);
     }
 }
@@ -77,8 +89,7 @@ test.only("Get the list of job offers", async ({ page }) => {
 
     strJobOffersList = strJobOffersList.slice(0, -2);
     strJobOffersList += "\n]"
-    const timestamp = new Date().getTime()
-    await fs.writeFile(dir_jobname + "jobsList_" + timestamp.toString() + ".json", strJobOffersList, 'utf8', (err) => {
-        if(err) console.log(err);
-    });
+
+    const timestamp = Date.now();
+    await fs.writeFile(`${dirJobname}jobsList_${timestamp}.json`, strJobOffersList, 'utf8');
 });
