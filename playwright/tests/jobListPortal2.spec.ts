@@ -55,6 +55,7 @@ test.only("Get the list of job offers", async ({ page }) => {
     var strJobOffersList = '[\n';
 
     while(jobsCardIndex < jobsCards) {
+        console.log(`${jobsCardIndex}, ${jobsCards}`)
         var jobIndexAtCard = 1;
         if(jobsCardIndex+1 == jobsCards) jobsMaxIndexAtCard = jobsListLength - (jobsCards * 50);
         while(jobIndexAtCard < jobsMaxIndexAtCard + 1) {
@@ -83,7 +84,7 @@ test.only("Get the list of job offers", async ({ page }) => {
             }
             jobIndexAtCard++;
         }
-        await jobsList.switchToNextCard();
+        if (!await jobsList.switchToNextCard()) jobsCardIndex = jobsCards;
         jobsCardIndex++;
     }
 

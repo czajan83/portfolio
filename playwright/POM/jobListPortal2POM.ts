@@ -120,11 +120,13 @@ export class JobsListPortal2 extends JobPortal2 {
         return ''
     }
 
-    async switchToNextCard() {
+    async switchToNextCard(): Promise<boolean> {
         const switchToNextCardPath = '#offers-list > div.listing_b1x0kate.core_po9665q > div.listing_p1k3sq6e > div > button.listing_ngj95i6.listing_s1hxgdve.size-small.variant-ghost.core_b1fqykql';
         if(await this.page.locator(switchToNextCardPath).isVisible()) {
             await this.page.locator(switchToNextCardPath).click();
             await delay(2000);
+            return true;
         }
+        return false;
     }
 }
