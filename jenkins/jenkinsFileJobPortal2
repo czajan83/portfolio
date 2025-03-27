@@ -37,12 +37,5 @@ pipeline {
                 }
             }
         }        
-        stage('Put the offers to Trello') { 
-            steps {
-       			dir('/git/portfolio/playwright') { 
-                	sh(script: 'npx playwright test tests/jobDetailsPortal2Trello.spec.ts --config=playwright.config.ts --project=chrome') 
-                }
-            }
-        }
     }
 }
