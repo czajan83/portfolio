@@ -38,7 +38,7 @@ export class JobDetailsPortal2 extends JobPortal2 {
             const searchIndexString = searchIndex.toString();
             if(await (await this.getJobReqSearchLocator(searchIndexString)).isVisible()) {
                 const caption = await (await this.getJobReqSearchLocator(searchIndexString)).innerText();
-                if(caption == "Nasze wymagania" || caption == "Our requirements" || caption == "Wymagania pracodawcy") {
+                if(caption == "Nasze wymagania" || caption == "Our requirements" || caption == "Wymagania pracodawcy" || caption == "Employer requirements") {
                     this.baseIndex = searchIndexString;
                     searchIndex = 11;
                 }
