@@ -13,37 +13,26 @@ async function createFolder(folderPath: string): Promise<boolean> {
         return false;
     }
     catch (error) {
-        await fs.createFolder(folderPath);
+        await fs.mkdir(folderPath);
         return true;
     }
 
 }
 
-var dirPortal = "../jobPortal2/";
-var dirJobname = dirPortal + "testerOprogramowania/"
-var dirDetails = dirJobname + "details/"
-var jobs = [{link: '', requirements: '', fileName: ""}];
-var max_opening_id = 0;
+async function make_folders(keyword: string): Promise<string> {
+    // keyword = 'aroundTown'
+    var dirPortal = "../jobPortal2/";
+    var dirJobname = dirPortal + keyword + "/";
+    var dirDetails = dirJobname + "details/";
+    
+    createFolder(dirPortal);
+    createFolder(dirJobname);
+    createFolder(dirDetails);
 
-createFolder(dirPortal);
-createFolder(dirJobname);
-if(!createFolder(dirDetails)){
-    var jobFiles = fs.readdirSync(dirDetails)
-    for (const jobFile of jobFiles) {
-        const current_opening_id = Number(jobFile.replace(/[^0-9]/g, ''));
-        if (max_opening_id < current_opening_id) max_opening_id = current_opening_id;
-        const job_opening = JSON.parse(JSON.stringify(require("../" + dirDetails + jobFile)));
-        jobs.push(job_opening);
-    }
+    return dirJobname + '/';
 }
-jobs.shift()
-   
 
-test.only("Get the list of job offers", async ({ page }) => {
-    let jobsList: JobsListPortal2;
-    jobsList = new JobsListPortal2(page);
-
-    await jobsList.openPage();
+async function perform_test(jobsList: JobsListPortal2): Promise <string> {
     await jobsList.closeCookiesPopup();
     await jobsList.closeJobiConPopup();
 
@@ -55,7 +44,6 @@ test.only("Get the list of job offers", async ({ page }) => {
     var strJobOffersList = '[\n';
 
     while(jobsCardIndex < jobsCards) {
-        console.log(`${jobsCardIndex}, ${jobsCards}`)
         var jobIndexAtCard = 1;
         if(jobsCardIndex+1 == jobsCards) jobsMaxIndexAtCard = jobsListLength - (jobsCards * 50);
         while(jobIndexAtCard < jobsMaxIndexAtCard + 1) {
@@ -72,6 +60,9 @@ test.only("Get the list of job offers", async ({ page }) => {
                     'employerLink': await jobsList.getJobItemEmployerLink(strJobIndexAtCard),
                     'level': await jobsList.getJobItemSeniorityLevel(strJobIndexAtCard),
                     'workplace': await jobsList.getJobItemRemoteOption(strJobIndexAtCard),
+                    'noExperience': await jobsList.getNoExperienceOption(strJobIndexAtCard),
+                    'noCvRequired': await jobsList.getNoCvRequired(strJobIndexAtCard),
+                    'nightWorkPossible': '',
                     'keywords': '',
                     'userNote': '',
                     'userNote2': '',
@@ -91,6 +82,30 @@ test.only("Get the list of job offers", async ({ page }) => {
     strJobOffersList = strJobOffersList.slice(0, -2);
     strJobOffersList += "\n]"
 
+    return strJobOffersList;
+
+}
+
+test("Get the list of job offers: tester oprogramowania", async ({ page }) => {
+
+    const dirJobname = await make_folders('testerOprogramowania')
+    let jobsList: JobsListPortal2;
+    jobsList = new JobsListPortal2(page);
+    await jobsList.openPage('/praca/tester%20oprogramowania;kw');
+    const strJobOffersList = await perform_test(jobsList);
     const timestamp = Date.now();
     await fs.writeFile(`${dirJobname}jobsList_${timestamp}.json`, strJobOffersList, 'utf8');
+
+});
+
+test("Get the list of job offers: praca fizyczna wokol Katow Wroclawskich", async ({ page }) => {
+
+    const dirJobname = await make_folders('wokolKatow')
+    let jobsList: JobsListPortal2;
+    jobsList = new JobsListPortal2(page);
+    await jobsList.openPage('/praca/katy%20wroclawskie;wp?rd=30&et=2');
+    const strJobOffersList = await perform_test(jobsList);
+    const timestamp = Date.now();
+    await fs.writeFile(`${dirJobname}jobsList_${timestamp}.json`, strJobOffersList, 'utf8');
+
 });

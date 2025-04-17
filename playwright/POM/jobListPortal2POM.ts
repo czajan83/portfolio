@@ -12,8 +12,10 @@ export class JobsListPortal2 extends JobPortal2 {
         this.multiLocationHeader = ' > h4';
     }
 
-    async openPage() {
-        await this.page.goto( this.website + '/praca/tester%20oprogramowania;kw' );
+    async openPage(subpage: string): Promise<void> {
+        // subpage = '/praca/tester%20oprogramowania;kw'
+        // subpage = '/praca/katy%20wroclawskie;wp?rd=30'
+        await this.page.goto( this.website + subpage );
         await delay(2000);
     }
 
@@ -23,23 +25,29 @@ export class JobsListPortal2 extends JobPortal2 {
             await this.page.locator(fairPopupPath).click();
     }
 
-    async closeJobHomeDistansePopup():Promise<void> {
+    async closeJobHomeDistansePopup(): Promise<void> {
         const popupButtonLocator = '#popupContainer > div > div > div > button';
         if(await this.page.locator(popupButtonLocator).isVisible())
             await this.page.locator(popupButtonLocator).click();
     }
 
-    async getJobsListLength():Promise<string> {
+    async getJobsListLength(): Promise<string> {
         return await this.page.locator('#search > div > div > div > div.listing_s1e6x2e0 > div.listing_m1em0ops > button > span.core_c11srdo1.variant-primary').innerText()
     }
 
+    async getOffersSectionNumber(): Promise<Number> {
+        const links = await this.page.locator('#offers-list > div').evaluateAll((elements) => elements.map((element) => element.getAttribute('data-test')));
+        let index = 1;
+        for(const link of links) {
+            if(link == 'section-offers') return index;
+            index++;
+        }
+        return 0;
+    }
+
     async getJobItemPath(item: string) {
-        const variant1 = '#offers-list > div.listing_b1i2dnp8 > div.listing_ohw4t83 > div:nth-child(' + item + ')';
-        const variant2 = '#offers-list > div:nth-child(3) > div:nth-child(' + item + ') > div.gp-pp-reset.tiles_b18pwp01.core_po9665q';
-        const variant3 = '#offers-list > div:nth-child(4) > div:nth-child(' + item + ') > div.gp-pp-reset.tiles_b18pwp01.core_po9665q';
-        if(await this.page.locator(variant3).isVisible()) return await variant3;
-        if(await this.page.locator(variant2).isVisible()) return await variant2;
-        return await variant1;
+        const sectionNumber = await this.getOffersSectionNumber();
+        return `#offers-list > div:nth-child(${sectionNumber}) > div:nth-child(${item}) > div.gp-pp-reset.tiles_b18pwp01.core_po9665q`;
     }
 
     async getJobItemDetailsPath(item: string) {
@@ -52,6 +60,10 @@ export class JobsListPortal2 extends JobPortal2 {
 
     async getJobItemLinkPath(item: string) {
         return await this.getJobItemHeaderPath(item) + '> a';
+    }
+
+    async getJobNoCvRequiredPath(item: string) {
+        return await this.getJobItemPath(item) + ' > div > div.tiles_shn51ei.tiles_b6aj4qa > div > p:nth-child(2)';
     }
 
     async getJobItemEmployerLinkPath(item: string) {
@@ -120,11 +132,34 @@ export class JobsListPortal2 extends JobPortal2 {
         return ''
     }
 
+    async getNoCvRequired(item: string): Promise<String> {
+        if(await this.page.locator(await this.getJobNoCvRequiredPath(item)).isVisible()) {
+            console.log('noCV')
+            return 'true'
+        }
+        return ''
+
+    }
+
+    async getNoExperienceOption(item: string): Promise<String> {
+        var index = 10;
+        while(index>1) {
+            let jobItemRemoteAvailabilityPath = await this.getJobItemDetailsPath(item) + 'ul > li:nth-child(' + index.toString() + ')'
+            if(await this.page.locator(jobItemRemoteAvailabilityPath).isVisible())
+                if((await this.page.locator(jobItemRemoteAvailabilityPath).innerText()).includes('Bez doświadczenia')) {
+                    console.log('true');
+                    return 'true';
+                }
+            index--;
+        }
+        return ''
+    }
+
     async switchToNextCard(): Promise<boolean> {
         const switchToNextCardPath = '#offers-list > div.listing_b1x0kate.core_po9665q > div.listing_p1k3sq6e > div > button.listing_ngj95i6.listing_s1hxgdve.size-small.variant-ghost.core_b1fqykql';
         if(await this.page.locator(switchToNextCardPath).isVisible()) {
             await this.page.locator(switchToNextCardPath).click();
-            await delay(2000);
+            await delay(20000);
             return true;
         }
         return false;
