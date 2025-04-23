@@ -13,10 +13,7 @@ export class JobsListPortal2 extends JobPortal2 {
     }
 
     async openPage(subpage: string): Promise<void> {
-        // subpage = '/praca/tester%20oprogramowania;kw'
-        // subpage = '/praca/katy%20wroclawskie;wp?rd=30'
         await this.page.goto( this.website + subpage );
-        await delay(2000);
     }
 
     async closeJobiConPopup() {
@@ -133,23 +130,16 @@ export class JobsListPortal2 extends JobPortal2 {
     }
 
     async getNoCvRequired(item: string): Promise<String> {
-        if(await this.page.locator(await this.getJobNoCvRequiredPath(item)).isVisible()) {
-            console.log('noCV')
-            return 'true'
-        }
+        if(await this.page.locator(await this.getJobNoCvRequiredPath(item)).isVisible()) return 'true';
         return ''
-
     }
 
     async getNoExperienceOption(item: string): Promise<String> {
         var index = 10;
         while(index>1) {
-            let jobItemRemoteAvailabilityPath = await this.getJobItemDetailsPath(item) + 'ul > li:nth-child(' + index.toString() + ')'
+            let jobItemRemoteAvailabilityPath = await this.getJobItemDetailsPath(item) + 'ul > li:nth-child(' + index.toString() + ')';
             if(await this.page.locator(jobItemRemoteAvailabilityPath).isVisible())
-                if((await this.page.locator(jobItemRemoteAvailabilityPath).innerText()).includes('Bez doświadczenia')) {
-                    console.log('true');
-                    return 'true';
-                }
+                if((await this.page.locator(jobItemRemoteAvailabilityPath).innerText()).includes('Bez doświadczenia')) return 'true';
             index--;
         }
         return ''
@@ -159,7 +149,6 @@ export class JobsListPortal2 extends JobPortal2 {
         const switchToNextCardPath = '#offers-list > div.listing_b1x0kate.core_po9665q > div.listing_p1k3sq6e > div > button.listing_ngj95i6.listing_s1hxgdve.size-small.variant-ghost.core_b1fqykql';
         if(await this.page.locator(switchToNextCardPath).isVisible()) {
             await this.page.locator(switchToNextCardPath).click();
-            await delay(20000);
             return true;
         }
         return false;

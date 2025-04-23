@@ -16,11 +16,9 @@ async function createFolder(folderPath: string): Promise<boolean> {
         await fs.mkdir(folderPath);
         return true;
     }
-
 }
 
 async function make_folders(keyword: string): Promise<string> {
-    // keyword = 'aroundTown'
     var dirPortal = "../jobPortal2/";
     var dirJobname = dirPortal + keyword + "/";
     var dirDetails = dirJobname + "details/";
