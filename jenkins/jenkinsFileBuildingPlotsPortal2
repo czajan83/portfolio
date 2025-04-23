@@ -1,0 +1,20 @@
+pipeline { 
+    agent any 
+    stages {
+        stage('Setup') { 
+            steps { 
+    			dir('/git/portfolio/playwright') {
+                	sh(script: 'npm install')
+                	sh(script: 'npx playwright install') 
+                }
+            }
+        }        
+        stage('GetBuildingPlotsList') { 
+            steps {
+       			dir('/git/portfolio/playwright') { 
+                	sh(script: 'npx playwright test tests/buildingPlotsListPortal2.spec.ts --config=playwright.config.ts --project=chrome') 
+                }
+            }
+        }        
+    }
+}
